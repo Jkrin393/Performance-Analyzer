@@ -7,6 +7,7 @@ import requests as re
 from config import API_KEY
 import json
 import argparse
+import time
 
 #attempt to pull the daily value over N time. default to one week
 def get_security_data(symbol, days=7):
@@ -24,7 +25,6 @@ def get_security_data(symbol, days=7):
         return None
     
     meta_data=data.get("Meta Data", {})
-    meta_symbol=meta_data.get("2. Symbol")
     meta_last_refreshed_date = meta_data.get("3. Last Refreshed")
 
     time_series_data=data['Time Series (Daily)']
@@ -34,27 +34,50 @@ def get_security_data(symbol, days=7):
 
     time_series_df=time_series_df.reset_index()
     time_series_df=time_series_df.rename(columns={"index":"Date"})
-
+    time_series_df["Symbol"] = symbol
     time_series_df=time_series_df.tail(days)
 
-    with open("dataframedata.txt", 'w') as outfile:
-        print(f"Security Symbol: {meta_symbol}", file=outfile)
-        print(f"Date report was run: {meta_last_refreshed_date}", file=outfile)
-        print(file=outfile)
-        print(time_series_df.to_string(index=False, float_format="{:.2f}".format), file=outfile) #index is converted to string without argument to remove
+    return time_series_df, meta_last_refreshed_date
 
+def fetch_multiple_securities(symbols, days=7):
+    data_by_symbol={}
+    last_refreshed_dates={}
 
-    return time_series_df
+    for ticker in symbols:
+        security_data=get_security_data(ticker,days)
+        if security_data is None:
+            continue
+            
+        current_dataframe, date_report_was_run=security_data
+        data_by_symbol[ticker]=current_dataframe
+        last_refreshed_dates[ticker]=date_report_was_run
 
+        #Free tier of Alpha Vantage limits time before a second get request is allowed. 15 seconds seem to be enough to get the second request successfully
+        time.sleep(15)
+
+    if not data_by_symbol:
+        return None, None
     
 
-#read symbol from cli
+    return data_by_symbol, last_refreshed_dates
+
+def compare_securities(security_data_by_ticker):
+    if not security_data_by_ticker:
+        return None
+    
+    combined_dataframe_for_comparison=pd.concat(security_data_by_ticker,names=["symbol"]).reset_index(level="symbol")
+
+    with open('combined_dataframe.txt', 'w') as outfile:
+        print(combined_dataframe_for_comparison.to_string(index=False), file=outfile)
+
+
+#read symbols from cli
 if __name__=="__main__":
-    cli_parser=argparse.ArgumentParser(description="fetch n days data for given security")
+    cli_parser=argparse.ArgumentParser(description="fetch n days data for given securities")
     cli_parser.add_argument(
-        "symbol",
-        type=str,
-        help="security ticker/symbol"
+        "symbols",
+        nargs="+",
+        help="security tickers/symbols seperated by a space"
     )
     cli_parser.add_argument(
         "--days", #double dashes for optional arguments
@@ -65,4 +88,15 @@ if __name__=="__main__":
 
     cli_arguments=cli_parser.parse_args()
 
-    filtered_security_dataframe=get_security_data(cli_arguments.symbol, cli_arguments.days)
+
+    security_data, last_refresh_dates=fetch_multiple_securities(cli_arguments.symbols, cli_arguments.days)
+    compare_securities(security_data)
+
+    if security_data is not None:
+        with open("dataframedata.txt", 'w') as outfile:
+            for symbol in cli_arguments.symbols:
+                current_dataframe=security_data.get(symbol)
+                print(f"Security Symbol: {symbol}", file=outfile)
+                print(f"Date report was run: {last_refresh_dates[symbol]} \n", file=outfile)
+                print(current_dataframe.to_string(index=False, float_format="{:.2f}".format) , file=outfile) #index is converted to string without argument to remove
+                print(file=outfile)
