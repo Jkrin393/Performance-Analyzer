@@ -3,3 +3,4 @@ __pycache__/
 config.py
 output/*png
 data.txt
+dataframedata.txt
