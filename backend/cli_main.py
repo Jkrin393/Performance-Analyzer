@@ -31,12 +31,14 @@ def main():
     print("Success fetching data")
 
     comparison_dataframe = calculate_security_value_metrics(security_data)
-    best_security, best_security_metrics = suggest_best_security(comparison_dataframe)
+   # best_security, best_security_metrics = suggest_best_security(comparison_dataframe)
+    best_result=suggest_best_security(comparison_dataframe)
     save_comparison_report(comparison_dataframe)
     save_dataframe_data(security_data,last_refresh_dates,cli_arguments.symbols)
     
-    print(f"Best security based on Sharpe ratio: {best_security}")
-    print(best_security_metrics)
+    print(f"Best security based on Sharpe ratio: {best_result['bestSecurity']}")
+    for metric, value in best_result['bestMetrics'].items():
+        print(f" {metric}: {value:.2f}")
 
 if __name__ == "__main__":
     main()

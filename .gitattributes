@@ -1,0 +1,31 @@
+# normalize file endings and fix lf -> crlf issues in git
+* text=auto
+
+#frontend files
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+
+#backend files
+*.py text eol=lf
+*.sh text eol=lf
+
+#config files
+*.env text eol=lf
+*.env.local text eol=lf
+*.env.*.local text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+
+# windows specific things
+*.bat text eol=crlf
+.gitattributes text eol=lf

@@ -41,7 +41,10 @@ def suggest_best_security(comparison_dataframe):
     #consider adding CAGR, Max Drawdown, Sortino Ratio, beta comparison, dividend yield, annualized return w/ reinvestment
     
     sharpe_ratio_row=comparison_dataframe.loc['Sharpe Ratio']
-    best_security_by_sharp_ratio=sharpe_ratio_row.idxmax()
-    best_security_metrics=comparison_dataframe[best_security_by_sharp_ratio]
+    best_security_by_sharpe_ratio=sharpe_ratio_row.idxmax()
+    best_security_metrics=comparison_dataframe[best_security_by_sharpe_ratio]
 
-    return best_security_by_sharp_ratio, best_security_metrics
+    return {
+        "bestSecurity": best_security_by_sharpe_ratio,
+        "bestMetrics": best_security_metrics.to_dict()
+    }
