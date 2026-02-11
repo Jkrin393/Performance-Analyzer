@@ -6,9 +6,8 @@ from typing import List
 from pydantic import BaseModel
 from utils.file_writer import save_comparison_report, save_dataframe_data, save_raw_data_payload
 from api.alpha_vantage import fetch_multiple_securities
-from anaylsis.metrics import calculate_security_value_metrics, suggest_best_security
+from analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from fastapi.middleware.cors import CORSMiddleware
-
 
 app = FastAPI(
     title="Security Analyzer API",
@@ -56,7 +55,7 @@ def analyze_securities(request: AnalysisRequest):
         "comparisonTable":comparison_dataframe.to_dict(),
         "bestSecurity":best_result["bestSecurity"],
         "bestMetrics":best_result["bestMetrics"],
-        "dateReportRun":last_refresh_dates,
+        "lastRefreshed":last_refresh_dates,
     }
 
     """best_security,best_metrics=suggest_best_security(comparison_dataframe)

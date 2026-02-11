@@ -20,7 +20,7 @@ function App(){
     
     const payload={
       symbols:symbolArray,
-      daysRequested:days,
+      days:days,
     }
     const apiRequestOptions={
       method:'POST',

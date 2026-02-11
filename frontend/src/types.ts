@@ -1,5 +1,5 @@
 export interface AnalysisResponse {
-  comparison: ComparisonData
+  comparisonTable: ComparisonData
   bestSecurity: string
   bestMetrics: BestMetrics
   lastRefreshed: Record<string, string>
