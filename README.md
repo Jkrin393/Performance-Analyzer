@@ -1,7 +1,7 @@
 # Performance-Analyzer
 Compare performance of portfolio investments over time
 
-to run
+to run,
 set up a virtual environment and run the installs inside the virtual environment
 
 Install backend dependencies: pip install -r requirements.txt  
