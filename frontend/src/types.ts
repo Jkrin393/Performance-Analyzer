@@ -1,18 +1,21 @@
 export interface AnalysisResponse {
-  comparisonTable: ComparisonData
+  comparisonTable: ComparisonTable
   bestSecurity: string
   bestMetrics: BestMetrics
   lastRefreshed: Record<string, string>
 }
+export interface ComparisonTable {
+  [symbol: string]: SecurityMetrics 
+}
 
-export interface ComparisonData {
-  'Start Price': Record<string, number>
-  'End Price': Record<string, number>
-  'Total Return($)': Record<string, number>
-  'Total Return(%)': Record<string, number>
-  'Average Daily Change(%)': Record<string, number>
-  'Volatility(std dev)': Record<string, number>
-  'Sharpe Ratio': Record<string, number>
+export interface SecurityMetrics {
+  'Start Price': number
+  'End Price': number
+  'Total Return($)': number
+  'Total Return(%)': number
+  'Average Daily Change(%)': number
+  'Volatility(std dev)': number
+  'Sharpe Ratio': number
 }
 
 export interface BestMetrics {
@@ -24,3 +27,4 @@ export interface BestMetrics {
   'Volatility(std dev)': number
   'Sharpe Ratio': number
 }
+

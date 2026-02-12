@@ -1,6 +1,6 @@
 import argparse
 from api.alpha_vantage import fetch_multiple_securities
-from backend.anaylsis.metrics import calculate_security_value_metrics, suggest_best_security
+from backend.analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from utils.file_writer import save_dataframe_data, save_comparison_report
 
 def main():
