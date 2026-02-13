@@ -6,8 +6,9 @@ function App(){
   const [symbols, setSymbols]=useState('')
   const [days, setDays]=useState(7)
   const [results, setResults]=useState<AnalysisResponse| null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [loading, setLoading]=useState(false)
+  const [error, setError]=useState('')
+  const [useFakeData, setUseFakeData]=useState(true)
 
 
   const handleSubmit=async(event:React.SyntheticEvent<HTMLFormElement>)=>
@@ -16,8 +17,15 @@ function App(){
     setLoading(true)
     setError('')
     
-    const symbolArray=symbols.toUpperCase().split(/[\s,]+/)
-    
+    const trimmedSymbolInput=symbols.trim()
+    if (trimmedSymbolInput === '') {
+      setError('Please enter at least 1 security to analyze')
+      setLoading(false)
+      return
+    }
+
+    const symbolArray=trimmedSymbolInput.toUpperCase().split(/[\s,]+/)
+   
     const payload={
       symbols:symbolArray,
       days:days,
@@ -27,39 +35,19 @@ function App(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     }
-    /*
     try{
-      const backendResponse=await fetch('/api/analyze',apiRequestOptions)
+      const endpoint=useFakeData ? '/api/fakeanalyze':'/api/analyze'
+      const backendResponse=await fetch(endpoint, apiRequestOptions)
       const returnedData:AnalysisResponse=await backendResponse.json()
-      console.log('Returned data:', returnedData);
+      console.log(returnedData)
       setResults(returnedData)
     }
     catch(error){
-      setError('Issue with POST request')
+      setError('Issue with request')
     }
     finally{
       setLoading(false)
-    }*/
-
-    //fake backend data to save API calls to Alpha Vantage
-    const loadFakeData=async()=>{
-      setLoading(true)
-      try{
-        const fakeBackendResponse=await fetch('/api/fakeanalyze', apiRequestOptions)
-        const fakeBackendData: AnalysisResponse=await fakeBackendResponse.json()
-        console.log('Fake Data: ', fakeBackendData)
-        
-        setResults(fakeBackendData)
-      }
-      catch(error){
-        setError("somehow there was an issue loading fake data")
-      }
-      finally{
-        setLoading(false)
-      }
     }
-  loadFakeData()
-
 
   }//event handler end
 
@@ -120,7 +108,7 @@ function App(){
       <h1>Security Analyzer</h1>
         <form onSubmit={handleSubmit}>
           <div>
-            <label>Requested Symbols</label>
+            <label>Company ticker(symbol)</label>
             <input
               type="text"
               value={symbols}
@@ -136,6 +124,15 @@ function App(){
               onChange={(event:React.ChangeEvent<HTMLInputElement>) => setDays(Number(event.target.value))} 
             />
           </div>
+          
+          {/*toggle for fake data*/}
+          <div>
+            <label>
+              <input type="checkbox" checked={useFakeData} onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUseFakeData(event.target.checked)}/>
+              Use Test Data(frontend debug/save api calls)
+            </label>
+          </div>
+          
           <button type="submit" disabled={loading}>
             {loading ? 'Loading results' : 'Analyze'}
           </button>
@@ -171,3 +168,36 @@ function App(){
 }///App end
 
 export default App
+
+    /*
+    try{
+      const backendResponse=await fetch('/api/analyze',apiRequestOptions)
+      const returnedData:AnalysisResponse=await backendResponse.json()
+      console.log('Returned data:', returnedData);
+      setResults(returnedData)
+    }
+    catch(error){
+      setError('Issue with POST request')
+    }
+    finally{
+      setLoading(false)
+    }
+
+    //fake backend data to save API calls to Alpha Vantage
+    const loadFakeData=async()=>{
+      setLoading(true)
+      try{
+        const fakeBackendResponse=await fetch('/api/fakeanalyze', apiRequestOptions)
+        const fakeBackendData: AnalysisResponse=await fakeBackendResponse.json()
+        console.log('Fake Data: ', fakeBackendData)
+        
+        setResults(fakeBackendData)
+      }
+      catch(error){
+        setError("somehow there was an issue loading fake data")
+      }
+      finally{
+        setLoading(false)
+      }
+    }
+  loadFakeData()*/
