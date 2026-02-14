@@ -1,6 +1,6 @@
 import React, { useState, type JSX } from 'react'
 import './App.css'
-import type { AnalysisResponse, SecurityMetrics } from './types'
+import type { AnalysisResponse, SecurityMetrics, BestMetrics } from './types'
 
 function App(){
   const [symbols, setSymbols]=useState('')
@@ -93,7 +93,7 @@ function App(){
       <table>
         <thead>
         <tr>
-          <th>Metric</th>
+          <th></th>
           {metricsTableHeaderCells}
         </tr>
         </thead>
@@ -101,7 +101,36 @@ function App(){
       </table>
     )
 
-  }//render function
+  }//renderComparison function
+
+  const renderBestSecurityTable=()=>{
+    if(!results)
+      return null
+
+    const metricNames: Array<keyof BestMetrics>=[
+      'Start Price',
+      'End Price',
+      'Total Return(%)',
+      'Sharpe Ratio',
+    ]
+
+    return(
+      <div className="results">
+       <h3>Best Security: {results.bestSecurity}</h3>
+      <table>
+        <tbody>
+          {metricNames.map((metric) => (
+            <tr key={metric}>
+              <td>{metric}</td>
+              <td>{results.bestMetrics[metric].toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    )
+  }
 
   return(
     <div className='app'>
@@ -125,11 +154,11 @@ function App(){
             />
           </div>
           
-          {/*toggle for fake data*/}
+          {/*checkbox for fake data*/}
           <div>
             <label>
               <input type="checkbox" checked={useFakeData} onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUseFakeData(event.target.checked)}/>
-              Use Test Data(frontend debug/save api calls)
+              Use Test Data
             </label>
           </div>
           
@@ -139,19 +168,12 @@ function App(){
         </form>
         {error && <p className='error'>{error}</p>}
 
-        {results && (
-        <div className="results">
-          <h2>Best Security: {results.bestSecurity}</h2>
-          
-          <h3>Metrics: </h3>
-            <p>Start Price: {results.bestMetrics['Start Price'].toFixed(2)}</p>
-            <p>End Price: {results.bestMetrics['End Price'].toFixed(2)}</p>
-            <p>Total Return(%): {results.bestMetrics['Total Return(%)'].toFixed(2)}</p>
-            <p>Total Return($): {results.bestMetrics['Total Return($)'].toFixed(2)}</p>
-            <p>Sharpe Ratio: {results.bestMetrics['Sharpe Ratio'].toFixed(2)}</p>
+        {(
+          <div className="results">
+            {renderBestSecurityTable()}
         
-          <h3>All Results: </h3>
-          {renderComparisonTable()}
+            <h3>All Results: </h3>
+            {renderComparisonTable()}
         
         </div> //results div        
 
@@ -200,4 +222,14 @@ export default App
         setLoading(false)
       }
     }
-  loadFakeData()*/
+  loadFakeData()
+  
+          <div className="results">
+          <h2>Best Security: {results.bestSecurity}</h2>
+          
+          <h3>Metrics: </h3>
+            <p>Start Price: {results.bestMetrics['Start Price'].toFixed(2)}</p>
+            <p>End Price: {results.bestMetrics['End Price'].toFixed(2)}</p>
+            <p>Total Return(%): {results.bestMetrics['Total Return(%)'].toFixed(2)}</p>
+            <p>Total Return($): {results.bestMetrics['Total Return($)'].toFixed(2)}</p>
+            <p>Sharpe Ratio: {results.bestMetrics['Sharpe Ratio'].toFixed(2)}</p>*/

@@ -21,10 +21,7 @@ export interface SecurityMetrics {
 export interface BestMetrics {
   'Start Price': number
   'End Price': number
-  'Total Return($)': number
   'Total Return(%)': number
-  'Average Daily Change(%)': number
-  'Volatility(std dev)': number
   'Sharpe Ratio': number
 }
 
