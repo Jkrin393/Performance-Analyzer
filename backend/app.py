@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from typing import List
 from pydantic import BaseModel
 from utils.file_writer import save_comparison_report, save_dataframe_data, save_raw_data_payload
-from api.alpha_vantage import fetch_multiple_securities
+from alphaApi.alpha_vantage import fetch_multiple_securities
 from analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from fastapi.middleware.cors import CORSMiddleware
 

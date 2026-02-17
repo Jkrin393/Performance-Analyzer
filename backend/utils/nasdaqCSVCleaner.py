@@ -3,7 +3,7 @@ import re
 
 def clean_company_name(name:str) -> str:
     patterns_to_remove=[
-        r"\bCommon Stock\b",
+        #r"\bCommon Stock\b",
         r"\bOrdinary Shares\b",
         r"\bAmerican Depositary Shares\b",
         r"\bADS\b",

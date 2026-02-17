@@ -1,5 +1,5 @@
 import argparse
-from api.alpha_vantage import fetch_multiple_securities
+from alphaApi.alpha_vantage import fetch_multiple_securities
 from backend.analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from utils.file_writer import save_dataframe_data, save_comparison_report
 
