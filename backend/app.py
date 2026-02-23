@@ -8,6 +8,7 @@ from utils.file_writer import save_comparison_report, save_dataframe_data, save_
 from alphaApi.alpha_vantage import fetch_multiple_securities
 from analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from fastapi.middleware.cors import CORSMiddleware
+from utils.ticker_lookup import search_ticker
 
 app = FastAPI(
     title="Security Analyzer API",
@@ -118,3 +119,14 @@ def mock_analyze_securities(request: AnalysisRequest):
         "bestMetrics": best_result["bestMetrics"],
         "lastRefreshed": last_refresh_dates,
     }
+
+class TickerSearchRequest(BaseModel):
+    query: str
+
+@app.post("/api/search-ticker")
+def search_ticker_endpoint(request: TickerSearchRequest):
+    if not request.query or len(request.query) < 2:
+        return {"results": []}
+    
+    results = search_ticker(request.query)
+    return {"results": results}
