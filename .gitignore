@@ -17,6 +17,8 @@ backend/config.py
 backend/output/*png
 backend/output_files
 __pycache__
+backend/tickers.db
+backend/database/tickers.db
 
 #frontend files
 node_modules

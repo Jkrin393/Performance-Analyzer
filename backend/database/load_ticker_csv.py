@@ -22,9 +22,9 @@ def load_csv_to_db(csv_path, replace_existing: bool=False):
 
     print(f"Loaded {len(ticker_df)} tickers into database!")
     
-    if __name__ == "__main__":
-        csv_path = "./data/tickers.csv"
-        load_csv_to_db(csv_path)    
+if __name__ == "__main__":
+    csv_path = "../data/tickers.csv"
+    load_csv_to_db(csv_path)    
     
     """
     db=SessionLocal()        

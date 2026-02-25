@@ -4,11 +4,12 @@
 from fastapi import FastAPI
 from typing import List
 from pydantic import BaseModel
-from utils.file_writer import save_comparison_report, save_dataframe_data, save_raw_data_payload
 from alphaApi.alpha_vantage import fetch_multiple_securities
 from analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from fastapi.middleware.cors import CORSMiddleware
 from utils.ticker_lookup import search_ticker
+from database import Ticker, SessionLocal
+
 
 app = FastAPI(
     title="Security Analyzer API",
@@ -130,3 +131,25 @@ def search_ticker_endpoint(request: TickerSearchRequest):
     
     results = search_ticker(request.query)
     return {"results": results}
+
+
+
+@app.get("/admin/tickers")
+def list_tickers():
+    db = SessionLocal()
+    tickers = db.query(Ticker).all()
+    db.close()
+    records=[]
+    for ticker in tickers:
+        record={
+            "symbol":ticker.symbol,
+            "name":ticker.name,
+        }
+        records.append(record)
+
+    return records
+
+
+
+
+#from utils.file_writer import save_comparison_report, save_dataframe_data, save_raw_data_payload
