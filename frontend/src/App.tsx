@@ -1,6 +1,8 @@
 import React, { useState, type JSX } from 'react'
 import './App.css'
-import type { AnalysisResponse, SecurityMetrics, BestMetrics } from './types'
+import type { AnalysisResponse,} from './types'
+import { analyzeSecurities } from './services/api'
+import ResultsTables from './components/ResultsTables'
 
 function App(){
   const [symbols, setSymbols]=useState('')
@@ -10,7 +12,7 @@ function App(){
   const [error, setError]=useState('')
   const [useFakeData, setUseFakeData]=useState(true)
 
-
+//return all tickers
   const handleSubmit=async(event:React.SyntheticEvent<HTMLFormElement>)=>
   {
     event.preventDefault()//preventDefault to prevent app reloading/interupting async call
@@ -26,19 +28,8 @@ function App(){
 
     const symbolArray=trimmedSymbolInput.toUpperCase().split(/[\s,]+/)
    
-    const payload={
-      symbols:symbolArray,
-      days:days,
-    }
-    const apiRequestOptions={
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    }
     try{
-      const endpoint=useFakeData ? '/api/fakeanalyze':'/api/analyze'
-      const backendResponse=await fetch(endpoint, apiRequestOptions)
-      const returnedData:AnalysisResponse=await backendResponse.json()
+      const returnedData=await analyzeSecurities(symbolArray, days, useFakeData)
       console.log(returnedData)
       setResults(returnedData)
     }
@@ -51,6 +42,103 @@ function App(){
 
   }//event handler end
 
+
+
+  return(
+    <div className='app'>
+      <h1>Security Analyzer</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Company ticker(symbol)</label>
+            <input
+              type="text"
+              value={symbols}
+              onChange={(event:React.ChangeEvent<HTMLInputElement>) => setSymbols(event.target.value)} //event.value returns htmlInputEvent, .target specifies calling calling element
+            />
+          </div>
+
+          <div>
+            <label>Days: </label>
+              <input
+              type="number"
+              value={days}
+              onChange={(event:React.ChangeEvent<HTMLInputElement>) => setDays(Number(event.target.value))} 
+            />
+          </div>
+          
+          {/*checkbox for fake data*/}
+          <div>
+            <label>
+              <input type="checkbox" checked={useFakeData} onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUseFakeData(event.target.checked)}/>
+              Use Test Data
+            </label>
+          </div>
+          
+          <button type="submit" disabled={loading}>
+            {loading ? 'Loading results' : 'Analyze'}
+          </button>
+        </form>
+        {error && <p className='error'>{error}</p>}
+        {results && <ResultsTables results={results} />}
+
+
+  </div>
+    
+    
+  )
+
+
+}///App end
+
+export default App
+
+    /*
+    try{
+      const backendResponse=await fetch('/api/analyze',apiRequestOptions)
+      const returnedData:AnalysisResponse=await backendResponse.json()
+      console.log('Returned data:', returnedData);
+      setResults(returnedData)
+    }
+    catch(error){
+      setError('Issue with POST request')
+    }
+    finally{
+      setLoading(false)
+    }
+
+    //fake backend data to save API calls to Alpha Vantage
+    const loadFakeData=async()=>{
+      setLoading(true)
+      try{
+        const fakeBackendResponse=await fetch('/api/fakeanalyze', apiRequestOptions)
+        const fakeBackendData: AnalysisResponse=await fakeBackendResponse.json()
+        console.log('Fake Data: ', fakeBackendData)
+        
+        setResults(fakeBackendData)
+      }
+      catch(error){
+        setError("somehow there was an issue loading fake data")
+      }
+      finally{
+        setLoading(false)
+      }
+    }
+  loadFakeData()
+  
+          <div className="results">
+          <h2>Best Security: {results.bestSecurity}</h2>
+          
+          <h3>Metrics: </h3>
+            <p>Start Price: {results.bestMetrics['Start Price'].toFixed(2)}</p>
+            <p>End Price: {results.bestMetrics['End Price'].toFixed(2)}</p>
+            <p>Total Return(%): {results.bestMetrics['Total Return(%)'].toFixed(2)}</p>
+            <p>Total Return($): {results.bestMetrics['Total Return($)'].toFixed(2)}</p>
+            <p>Sharpe Ratio: {results.bestMetrics['Sharpe Ratio'].toFixed(2)}</p>
+            
+            
+            
+            
+            
   const renderComparisonTable=()=>{
     if(!results)
       return null
@@ -131,44 +219,8 @@ function App(){
 
     )
   }
-
-  return(
-    <div className='app'>
-      <h1>Security Analyzer</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Company ticker(symbol)</label>
-            <input
-              type="text"
-              value={symbols}
-              onChange={(event:React.ChangeEvent<HTMLInputElement>) => setSymbols(event.target.value)} //event.value returns htmlInputEvent, .target specifies calling calling element
-            />
-          </div>
-
-          <div>
-            <label>Days: </label>
-              <input
-              type="number"
-              value={days}
-              onChange={(event:React.ChangeEvent<HTMLInputElement>) => setDays(Number(event.target.value))} 
-            />
-          </div>
-          
-          {/*checkbox for fake data*/}
-          <div>
-            <label>
-              <input type="checkbox" checked={useFakeData} onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUseFakeData(event.target.checked)}/>
-              Use Test Data
-            </label>
-          </div>
-          
-          <button type="submit" disabled={loading}>
-            {loading ? 'Loading results' : 'Analyze'}
-          </button>
-        </form>
-        {error && <p className='error'>{error}</p>}
-
-        {(
+    
+          {(
           <div className="results">
             {renderBestSecurityTable()}
         
@@ -180,56 +232,4 @@ function App(){
           
           
           //<pre>{JSON.stringify(results, null, 2)}</pre>
-        )}
-  </div>
-    
-    
-  )
-
-
-}///App end
-
-export default App
-
-    /*
-    try{
-      const backendResponse=await fetch('/api/analyze',apiRequestOptions)
-      const returnedData:AnalysisResponse=await backendResponse.json()
-      console.log('Returned data:', returnedData);
-      setResults(returnedData)
-    }
-    catch(error){
-      setError('Issue with POST request')
-    }
-    finally{
-      setLoading(false)
-    }
-
-    //fake backend data to save API calls to Alpha Vantage
-    const loadFakeData=async()=>{
-      setLoading(true)
-      try{
-        const fakeBackendResponse=await fetch('/api/fakeanalyze', apiRequestOptions)
-        const fakeBackendData: AnalysisResponse=await fakeBackendResponse.json()
-        console.log('Fake Data: ', fakeBackendData)
-        
-        setResults(fakeBackendData)
-      }
-      catch(error){
-        setError("somehow there was an issue loading fake data")
-      }
-      finally{
-        setLoading(false)
-      }
-    }
-  loadFakeData()
-  
-          <div className="results">
-          <h2>Best Security: {results.bestSecurity}</h2>
-          
-          <h3>Metrics: </h3>
-            <p>Start Price: {results.bestMetrics['Start Price'].toFixed(2)}</p>
-            <p>End Price: {results.bestMetrics['End Price'].toFixed(2)}</p>
-            <p>Total Return(%): {results.bestMetrics['Total Return(%)'].toFixed(2)}</p>
-            <p>Total Return($): {results.bestMetrics['Total Return($)'].toFixed(2)}</p>
-            <p>Sharpe Ratio: {results.bestMetrics['Sharpe Ratio'].toFixed(2)}</p>*/
+        )}*/

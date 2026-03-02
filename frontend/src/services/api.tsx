@@ -15,7 +15,7 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
 
     if(!backendResponse.ok)
     {
-        throw new Error("could now analyze securities")
+        throw new Error("could not analyze securities")
     }
     
     const returnData: AnalysisResponse=await backendResponse.json()
@@ -28,10 +28,13 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
 export const loadAllTickers = async (limit: number) => {
   const response = await fetch(`/admin/tickers?limit=${limit}`)
   
-  if (!response.ok) {
+  if (!response.ok) 
+  {
     throw new Error('Failed to load tickers')
   }
   
   const data = await response.json()
   return data.tickers
 }
+
+
