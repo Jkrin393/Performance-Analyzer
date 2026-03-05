@@ -1,5 +1,6 @@
 import type { JSX } from 'react'
 import type { AnalysisResponse, SecurityMetrics, BestMetrics } from '../types'
+import { useState } from 'react'
 
 interface TableProperties {
   results: AnalysisResponse
@@ -8,6 +9,7 @@ interface TableProperties {
 export default function ResultsTables({ results }: TableProperties) {
     const comparison = results.comparisonTable
     const tickerNames = Object.keys(comparison)
+    const [showAllRequestedTickers, setShowAllRequestedTickers] = useState(false)
 
     const metricNames: Array<keyof SecurityMetrics> = [
         'Start Price',
@@ -39,7 +41,14 @@ export default function ResultsTables({ results }: TableProperties) {
         </tbody>
       </table>
 
-      <h3>All Results:</h3>
+      {/*button to show/hide all requested tickers*/}
+      <button onClick={()=> setShowAllRequestedTickers(!showAllRequestedTickers)}  style={{ display: "block", marginTop: "12px" }}> 
+        {showAllRequestedTickers?"▼Hide all requested tickers":"▶Show all requested tickers" }
+      </button>
+      
+      {showAllRequestedTickers && (
+      <>
+      <h3>All requested tickers:</h3>
       <table>
         <thead>
           <tr>
@@ -53,13 +62,19 @@ export default function ResultsTables({ results }: TableProperties) {
           {metricNames.map((metric) => (
             <tr key={metric}>
               <td>{metric}</td>
-              {tickerNames.map((ticker) => (
-                <td key={ticker}>{comparison[ticker][metric]}</td>
-              ))}
+              {tickerNames.map((ticker) => {
+                const value = comparison[ticker][metric];
+                return(
+                  <td key={ticker}>{typeof value==="number"?value.toFixed(2) : value}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
       </table>
+      </>
+      )}
      </div>
     )
 

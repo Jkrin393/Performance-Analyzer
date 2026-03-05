@@ -43,17 +43,19 @@ button {
   background-color: #0b0b0e;
   color: white;
   border: none;
+  border-radius: 8px;
   padding: 12px;
   font-size: 16px;
-  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   max-width: 400;
   margin: 0 auto;
+  background: linear-gradient(90deg, #535bf2, #6670ff);
 }
 
 button:hover {
-  background-color: #535bf2;
+  transform: scale(1.03);
+  background: linear-gradient(90deg, #6670ff, #535bf2);
 }
 
 button:disabled {
@@ -85,10 +87,11 @@ button:disabled {
 }
 
 .results h3{
-  text-decoration: underline;
   display: inline-block;
+  background-color: #eef0ff;
   padding: 6px 12px;
-  line-height: 1px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 
@@ -97,6 +100,8 @@ button:disabled {
   border-collapse: collapse;
   margin-top: 0px;
   margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
 .result thead {
@@ -104,13 +109,18 @@ button:disabled {
   margin-top: 0px;
 }
 
-th,
-td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-  margin-top: 0px;
+th {
+  background-color: #535bf2;
+  color: white;
+  font-weight: 600;
 }
+
+
+td {
+  padding: 12px;
+  text-align: center;
+}
+
 
 th:first-child
 td:first-child {
@@ -119,7 +129,10 @@ td:first-child {
 }
 
 tbody tr:nth-child(even) {
-  background-color: #fafafa;
+  background-color: #f2f2f7;
+}
+tbody tr:hover {
+  background-color: #e0e0ff;
 }
 
 
@@ -129,5 +142,14 @@ tbody tr:nth-child(even) {
   background-color: #fafafa;
   border-radius: 4px;
   max-width: 400;
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  margin-top: 0px;
+  background-color: #535bf2;
+  color:white;
+  font-weight: 600;
+}
 }
 */
