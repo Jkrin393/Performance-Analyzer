@@ -5,7 +5,11 @@ from database import Ticker, SessionLocal
 from utils.ticker_lookup import search_ticker
 from analysis.metrics import calculate_security_value_metrics, suggest_best_security
 from alphaApi.alpha_vantage import fetch_multiple_securities
+import pandas as pd
 
+#for fake data debugging
+from datetime import datetime, timedelta
+import random
 
 router=APIRouter()
 
@@ -49,17 +53,24 @@ def analyze_securities(request: AnalysisRequest):
 
     best_result=suggest_best_security(comparison_dataframe)
 
+    historical_data={}
+    for symbol, dataframe in security_data.items():
+        sorted_dataframe=dataframe.sort_values('Date')
+        filtered_dataframe=sorted_dataframe[['Date', '4. close']]
+        records_list=filtered_dataframe.to_dict('records')
+        historical_data[symbol]=records_list
+
     return {
         "comparisonTable":comparison_dataframe.to_dict(),
         "bestSecurity":best_result["bestSecurity"],
         "bestMetrics":best_result["bestMetrics"],
         "lastRefreshed":last_refresh_dates,
+        "historical_data":historical_data,
     }
 #fake endpoint to prevent using up all free API requests
 @router.post("/api/fakeanalyze")
 def mock_analyze_securities(request: AnalysisRequest):
-    
-    import pandas as pd
+    USE_RANDOM_DATA = False
 
     mock_comparison_data = {
         "AAPL": {
@@ -99,12 +110,37 @@ def mock_analyze_securities(request: AnalysisRequest):
         "NVDA": "2024-02-06",
         "GOOGL": "2024-02-06"
     }
+
+    #fake historical data to debug chart
+    historical_data={}
+    for symbol, metrics in mock_comparison_data.items():
+        start_price=metrics["Start Price"]
+        end_price=metrics["End Price"]
+        number_of_days=request.days
+
+        price_data=[]
+        for i in range(number_of_days):
+            date=(datetime.now()-timedelta(days=number_of_days-i-1)).strftime("%Y-%m-%d")
+            if number_of_days>1:
+                step=i/(number_of_days-1)
+            else:
+                step=1
+            price=start_price+(end_price-start_price)*step
+            if USE_RANDOM_DATA:
+                price=price*(1+random.uniform(-0.02,0.02))
+
+            price_data.append({"Date":date,"4. close":round(price,2)})
+
+        historical_data[symbol]=price_data
+
     
+
     return {
         "comparisonTable": comparison_dataframe.to_dict(),
         "bestSecurity": best_result["bestSecurity"],
         "bestMetrics": best_result["bestMetrics"],
         "lastRefreshed": last_refresh_dates,
+        "historical_data":historical_data,
     }
 
 
@@ -132,4 +168,4 @@ def list_tickers():
         }
         records.append(record)
 
-    return records
+    return {"tickers":records, "count":len(records)}
