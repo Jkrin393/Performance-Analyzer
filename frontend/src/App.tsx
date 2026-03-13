@@ -4,6 +4,10 @@ import type { AnalysisResponse,} from './types'
 import { analyzeSecurities } from './services/api'
 import ResultsTables from './components/ResultsTables'
 
+//chart imports
+import PriceChart from './components/HistoricalPriceChart'
+import type { HistoricalDataMetrics } from './types'
+
 function App(){
   const [symbols, setSymbols]=useState('')
   const [days, setDays]=useState(7)
@@ -41,6 +45,14 @@ function App(){
     }
 
   }//event handler end
+
+  let historicalData;
+  if(results && results.historical_data){
+    historicalData=results.historical_data
+  }
+  else{
+    historicalData=undefined;
+  }
 
 
 
@@ -80,6 +92,15 @@ function App(){
         </form>
         {error && <p className='error'>{error}</p>}
         {results && <ResultsTables results={results} />}
+
+        {/*render chart if historicalData exists*/}
+        {historicalData ? (
+          <div style={{ marginTop: '40px' }}>
+          <h2>Price History Chart</h2>
+          <PriceChart historicalData={historicalData} />
+        </div>
+        ):null}
+
 
 
   </div>

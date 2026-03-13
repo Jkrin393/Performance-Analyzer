@@ -3,6 +3,7 @@ export interface AnalysisResponse {
   bestSecurity: string
   bestMetrics: BestMetrics
   lastRefreshed: Record<string, string>
+  historical_data: HistoricalDataMetrics
 }
 export interface ComparisonTable {
   [symbol: string]: SecurityMetrics 
@@ -23,5 +24,15 @@ export interface BestMetrics {
   'End Price': number
   'Total Return(%)': number
   'Sharpe Ratio': number
+}
+
+//types for graphing stock data
+export interface HistoricalDataMetrics{
+  [symbol:string]:PriceData[]
+}
+
+export interface PriceData {
+  Date: string
+  '4. close': number
 }
 
