@@ -1,4 +1,8 @@
+//file for contacting 3rd party APIs
+
 import type { AnalysisResponse,SecurityMetrics,BestMetrics } from '../types'
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 //analyze securities
 export async function analyzeSecurities(symbols: string[], days: number, useFakeData: boolean)
@@ -11,7 +15,7 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
       body:JSON.stringify({symbols, days})
     }
 
-    const backendResponse=await fetch(endpoint, apiRequestOptions)
+    const backendResponse=await fetch(`${API_BASE_URL}${endpoint}`, apiRequestOptions)
 
     if(!backendResponse.ok)
     {
@@ -26,7 +30,7 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
 
 //return all tickers
 export const loadAllTickers = async (limit: number) => {
-  const response = await fetch(`/admin/tickers?limit=${limit}`)
+  const response = await fetch(`${API_BASE_URL}/admin/tickers?limit=${limit}`)
   
   if (!response.ok) 
   {
