@@ -2,7 +2,13 @@
 
 import type { AnalysisResponse,} from '../types'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_BASE_URL = import.meta.env.VITE_API_URL ||(import.meta.env.MODE==='development' ? 'http://localhost:8000':'')
+
+if(!API_BASE_URL && import.meta.env.VITE_API_URL !=='development'){
+  throw new Error(
+    'VITE_API_URL is not set. Login to Vercel options to specify the path'
+  );
+}
 
 //analyze securities
 export async function analyzeSecurities(symbols: string[], days: number, useFakeData: boolean)
