@@ -1,6 +1,6 @@
 //file for contacting 3rd party APIs
 
-import type { AnalysisResponse,SecurityMetrics,BestMetrics } from '../types'
+import type { AnalysisResponse,} from '../types'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 

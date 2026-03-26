@@ -1,4 +1,4 @@
-import React, { useState, type JSX } from 'react'
+import React, { useState, } from 'react'
 import './App.css'
 import type { AnalysisResponse,} from './types'
 import { analyzeSecurities } from './services/api'
@@ -6,7 +6,7 @@ import ResultsTables from './components/ResultsTables'
 
 //chart imports
 import PriceChart from './components/HistoricalPriceChart'
-import type { HistoricalDataMetrics } from './types'
+//import type { HistoricalDataMetrics } from './types'
 
 function App(){
   const [symbols, setSymbols]=useState('')
