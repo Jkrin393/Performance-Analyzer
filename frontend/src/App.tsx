@@ -37,14 +37,21 @@ function App(){
       console.log(returnedData)
       setResults(returnedData)
     }
-    catch(error){
-      setError('Issue with request')
+    catch(error: unknown){
+      if (error instanceof Error && error.message) {
+        setError(error.message);
+      }
+      else
+      {
+        setError('Unexpected/undefined error occurred while processing the request.');
+      }
     }
-    finally{
+    finally
+    {
       setLoading(false)
     }
 
-  }//event handler end
+  };//event handler end
 
   let historicalData;
   if(results && results.historical_data){

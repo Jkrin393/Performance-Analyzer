@@ -11,8 +11,9 @@ if(!API_BASE_URL && import.meta.env.VITE_API_URL !=='development'){
 }
 
 //analyze securities
-export async function analyzeSecurities(symbols: string[], days: number, useFakeData: boolean)
+export async function analyzeSecurities(symbols: string[], days: number, useFakeData: boolean): Promise<AnalysisResponse>
 {
+    
     const endpoint=useFakeData ? '/api/fakeanalyze':'/api/analyze'
     const apiRequestOptions=
     {
@@ -21,15 +22,49 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
       body:JSON.stringify({symbols, days})
     }
 
-    const backendResponse=await fetch(`${API_BASE_URL}${endpoint}`, apiRequestOptions)
+    try{
+      const backendResponse=await fetch(`${API_BASE_URL}${endpoint}`, apiRequestOptions)
+      const responseData = await backendResponse.json().catch(()=>null);//catch lambda changes failed json parse to null object
 
-    if(!backendResponse.ok)
+      //pass errors originating in the backend (200 errors where a response was received but the response itself is an error)
+      if(!backendResponse.ok)
+      {
+        if(responseData && responseData.error)
+          {
+            throw new Error(responseData.error.toString().trim());
+          } 
+          else
+          {
+            throw new Error("backend returned an unknown error");
+          }
+      }
+
+      //const returnData: AnalysisResponse=await backendResponse.json()
+      const returnData: AnalysisResponse = responseData as AnalysisResponse;
+      return returnData;
+
+    }catch (error: unknown)
     {
-        throw new Error("could not analyze securities")
+      if (error instanceof Error)
+      {
+        const networkErrorMessages = ['Failed to fetch', 'NetworkError'];//most common network error text
+        let isNetworkError=false;
+        for(const msg of networkErrorMessages)
+        {
+          if(error.message.includes(msg))
+          {
+            isNetworkError=true;
+            break;
+          }
+        }
+        if(isNetworkError)
+          throw new Error('Could not communicate with backend. Check it is running and reachable(dont forget CORS issues)');
+        else
+          throw error
+      }
+    throw new Error('Unexpected error occurred while communicating with backend');
+
     }
-    
-    const returnData: AnalysisResponse=await backendResponse.json()
-    return returnData
 
 }
 
