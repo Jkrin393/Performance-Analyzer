@@ -4,13 +4,13 @@
 
 import pandas as pd
 import requests as re
-from config import API_KEY
+from config import APLHA_VANTAGE_API_KEY
 import time
 from utils.file_writer import save_raw_data_payload
 
 #pull the daily value over N time. default to one week
 def get_security_data(symbol, days=7):
-    url=f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={API_KEY}' #&outputsize=compact
+    url=f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={APLHA_VANTAGE_API_KEY}' #&outputsize=compact
 
     response=re.get(url)
     data=response.json()

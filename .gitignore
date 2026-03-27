@@ -19,6 +19,8 @@ backend/output_files
 __pycache__
 backend/tickers.db
 backend/database/tickers.db
+backend/.env
+.env
 
 #frontend files
 node_modules
