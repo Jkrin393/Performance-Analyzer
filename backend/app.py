@@ -19,13 +19,9 @@ app = FastAPI(
     description="Compare securities and analyze performance metrics",
     version="1.0.0"
 )
-origins=[VERCEL_FRONTEND_URL]
+origins=["https://security-performance-analyzer-9ldg8qtz0.vercel.app"]
 
-'''if ENVIRONMENT=="development":
-    origins.append(LOCAL_FRONTEND_URL)
 
-if ENVIRONMENT=="production":
-    origins.append(VERCEL_FRONTEND_URL)'''
 
 
 app.add_middleware(
@@ -38,3 +34,9 @@ app.add_middleware(
 
 
 app.include_router(router)
+
+'''if ENVIRONMENT=="development":
+    origins.append(LOCAL_FRONTEND_URL)
+
+if ENVIRONMENT=="production":
+    origins.append(VERCEL_FRONTEND_URL)'''
