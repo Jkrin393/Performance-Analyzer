@@ -19,7 +19,7 @@ app = FastAPI(
     description="Compare securities and analyze performance metrics",
     version="1.0.0"
 )
-origins=["https://security-performance-analyzer-9ldg8qtz0.vercel.app", "https://security-performance-analyzer-9ldg8qtz0.vercel.app/" ]
+origins=["https://security-performance-analyzer.onrender.com"]
 
 
 
@@ -27,7 +27,7 @@ origins=["https://security-performance-analyzer-9ldg8qtz0.vercel.app", "https://
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,        #frontend domains
-    allow_methods=["*"],
+    allow_methods=["GET","POST","PUT","DELETE","OPTIONS",],
     allow_headers=["*"],          #all headers
     allow_credentials=True,
 )
@@ -35,9 +35,6 @@ app.add_middleware(
 
 app.include_router(router)
 
-if __name__=="__main  ":
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=True)
 
 
 ###if ENVIRONMENT=="development":
