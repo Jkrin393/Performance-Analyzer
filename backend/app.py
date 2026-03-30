@@ -19,13 +19,13 @@ app = FastAPI(
     description="Compare securities and analyze performance metrics",
     version="1.0.0"
 )
-origins=[]
+origins=[VERCEL_FRONTEND_URL]
 
-if ENVIRONMENT=="development":
+'''if ENVIRONMENT=="development":
     origins.append(LOCAL_FRONTEND_URL)
 
 if ENVIRONMENT=="production":
-    origins.append(VERCEL_FRONTEND_URL)
+    origins.append(VERCEL_FRONTEND_URL)'''
 
 
 app.add_middleware(
