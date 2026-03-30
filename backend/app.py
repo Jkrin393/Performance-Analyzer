@@ -31,7 +31,7 @@ if ENVIRONMENT=="production":
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,        #frontend domains
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],          #all headers
     allow_credentials=True,
 )

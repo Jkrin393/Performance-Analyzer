@@ -1,4 +1,10 @@
-from database import engine, init_db, Ticker, SessionLocal
+from database import init_db, Ticker, SessionLocal
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
+DATABASE_URL=os.getenv("DATABASE_URL")
 
 def load_test_tickers( replace_existing: bool=False):
     init_db()
