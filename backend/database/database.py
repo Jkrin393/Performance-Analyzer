@@ -1,20 +1,23 @@
 from sqlalchemy import create_engine, Column, String
 from sqlalchemy.orm import sessionmaker, declarative_base
-from pathlib import Path
+import os
 
-BASE_DIR=Path(__file__).resolve().parent
-DATABASE_PATH=BASE_DIR/"tickers.db"
-DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+from dotenv import load_dotenv
+load_dotenv()
 
-#DATABASE_URL = "sqlite:///./tickers.db"
+#check environment and set to local DB if in DEV
+DATABASE_URL=os.getenv("DATABASE_URL")
 
-Base = declarative_base() #in Django: class Model(models.Model)
+if DATABASE_URL is None:
+    raise ValueError("DATABASE_URL has not been set")
+
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False}) 
 SessionLocal = sessionmaker( #session factory
     autocommit=False,  
     autoflush=False,    
     bind=engine      
 )   
+Base = declarative_base() #in Django: class Model(models.Model)
 
 class Ticker(Base):
     __tablename__ = "tickers" 
@@ -30,6 +33,16 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+
+
+
+
+#BASE_DIR=Path(__file__).resolve().parent
+#DATABASE_PATH=BASE_DIR/"tickers.db"
+#DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+
 
 
 
