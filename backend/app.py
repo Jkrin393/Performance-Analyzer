@@ -4,22 +4,33 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import router
-import config
+import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
+APLHA_VANTAGE_API_KEY = os.getenv("APLHA_VANTAGE_API_KEY")
+ENVIRONMENT=os.getenv("ENVIRONMENT", "development")
+LOCAL_FRONTEND_URL = os.getenv("LOCAL_FRONTEND_URL")
+VERCEL_FRONTEND_URL=os.getenv("VERCEL_FRONTEND_URL")
 
 app = FastAPI(
     title="Security Analyzer API",
     description="Compare securities and analyze performance metrics",
     version="1.0.0"
 )
-origins=[config.LOCAL_FRONTEND_URL]
+origins=[]
 
-if config.ENVIRONMENT=="development":
-    origins.append(config.LOCAL_FRONTEND_URL)
+if ENVIRONMENT=="development":
+    origins.append(LOCAL_FRONTEND_URL)
+
+if ENVIRONMENT=="production":
+    origins.append(VERCEL_FRONTEND_URL)
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,        #domains
+    allow_origins=origins,        #frontend domains
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],          #all headers
     allow_credentials=True,
