@@ -19,7 +19,7 @@ app = FastAPI(
     description="Compare securities and analyze performance metrics",
     version="1.0.0"
 )
-origins=["https://security-performance-analyzer-9ldg8qtz0.vercel.app"]
+origins=["https://security-performance-analyzer-9ldg8qtz0.vercel.app", "https://security-performance-analyzer-9ldg8qtz0.vercel.app/" ]
 
 
 
@@ -35,8 +35,13 @@ app.add_middleware(
 
 app.include_router(router)
 
-'''if ENVIRONMENT=="development":
-    origins.append(LOCAL_FRONTEND_URL)
+if __name__=="__main  ":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=True)
 
-if ENVIRONMENT=="production":
-    origins.append(VERCEL_FRONTEND_URL)'''
+
+###if ENVIRONMENT=="development":
+###    origins.append(LOCAL_FRONTEND_URL)
+
+###if ENVIRONMENT=="production":
+###    origins.append(VERCEL_FRONTEND_URL)
