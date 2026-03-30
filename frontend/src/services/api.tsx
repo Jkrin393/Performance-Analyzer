@@ -2,9 +2,9 @@
 
 import type { AnalysisResponse,} from '../types'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ||(import.meta.env.MODE==='development' ? 'http://localhost:8000':'')
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL //||(import.meta.env.MODE==='development' ? 'http://localhost:8000':'')
 
-if(!API_BASE_URL && import.meta.env.VITE_API_URL !=='development'){
+if(!BACKEND_BASE_URL && import.meta.env.VITE_BACKEND_BASE_URL !=='development'){
   throw new Error(
     'VITE_API_URL is not set. Login to Vercel options to specify the path'
   );
@@ -23,7 +23,7 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
     }
 
     try{
-      const backendResponse=await fetch(`${API_BASE_URL}${endpoint}`, apiRequestOptions)
+      const backendResponse=await fetch(`${BACKEND_BASE_URL}${endpoint}`, apiRequestOptions)
       const responseData = await backendResponse.json().catch(()=>null);//catch lambda changes failed json parse to null object
 
       //pass errors originating in the backend (200 errors where a response was received but the response itself is an error)
@@ -71,7 +71,7 @@ export async function analyzeSecurities(symbols: string[], days: number, useFake
 
 //return all tickers
 export const loadAllTickers = async (limit: number) => {
-  const response = await fetch(`${API_BASE_URL}/admin/tickers?limit=${limit}`)
+  const response = await fetch(`${BACKEND_BASE_URL}/admin/tickers?limit=${limit}`)
   
   if (!response.ok) 
   {
