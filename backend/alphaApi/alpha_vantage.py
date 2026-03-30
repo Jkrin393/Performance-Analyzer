@@ -4,9 +4,16 @@
 
 import pandas as pd
 import requests as re
-from config import APLHA_VANTAGE_API_KEY
 import time
 from utils.file_writer import save_raw_data_payload
+
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
+APLHA_VANTAGE_API_KEY=os.getenv("APLHA_VANTAGE_API_KEY")
+
 
 #pull the daily value over N time. default to one week
 def get_security_data(symbol, days=7):
