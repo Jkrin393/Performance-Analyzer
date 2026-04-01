@@ -24,6 +24,10 @@ origins=[]
 if ENVIRONMENT=="production":
     origins.append(VERCEL_FRONTEND_URL)
 
+print("ENVIRONMENT:", ENVIRONMENT)
+print("VERCEL_FRONTEND_URL:", VERCEL_FRONTEND_URL)
+print("origins:", origins)
+
 
 
 
