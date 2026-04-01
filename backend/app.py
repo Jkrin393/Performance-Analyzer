@@ -19,7 +19,10 @@ app = FastAPI(
     description="Compare securities and analyze performance metrics",
     version="1.0.0"
 )
-origins=["https://security-performance-analyzer.onrender.com"]
+
+origins=[]
+if ENVIRONMENT=="production":
+    origins.append(VERCEL_FRONTEND_URL)
 
 
 
