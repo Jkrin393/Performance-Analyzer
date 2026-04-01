@@ -23,6 +23,7 @@ app = FastAPI(
 origins=[]
 if ENVIRONMENT=="production":
     origins.append(VERCEL_FRONTEND_URL)
+    
 
 print("ENVIRONMENT:", ENVIRONMENT)
 print("VERCEL_FRONTEND_URL:", VERCEL_FRONTEND_URL)
@@ -33,10 +34,11 @@ print("origins:", origins)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,        #frontend domains
+    #allow_origins=origins,        #frontend domains
+    allow_origins=["*"]
     allow_methods=["GET","POST","PUT","DELETE","OPTIONS",],
     allow_headers=["*"],          #all headers
-    allow_credentials=True,
+    #allow_credentials=True,
 )
 
 
