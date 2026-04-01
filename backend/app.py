@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 APLHA_VANTAGE_API_KEY = os.getenv("APLHA_VANTAGE_API_KEY")
-ENVIRONMENT=os.getenv("ENVIRONMENT", "development")
+ENVIRONMENT=os.getenv("ENVIRONMENT")
 LOCAL_FRONTEND_URL = os.getenv("LOCAL_FRONTEND_URL")
 VERCEL_FRONTEND_URL=os.getenv("VERCEL_FRONTEND_URL")
 
