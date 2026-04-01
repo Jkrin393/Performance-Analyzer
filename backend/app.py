@@ -34,8 +34,8 @@ print("origins:", origins)
 
 app.add_middleware(
     CORSMiddleware,
-    #allow_origins=origins,        #frontend domains
-    allow_origins=["*"]
+    allow_origins=origins,        #frontend domains
+    #allow_origins=["*"],
     allow_methods=["GET","POST","PUT","DELETE","OPTIONS",],
     allow_headers=["*"],          #all headers
     #allow_credentials=True,
